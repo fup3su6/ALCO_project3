@@ -1,14 +1,15 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<bitset>
 using namespace std;
 
-string state[4] = { "SN","WN","WT","ST" };
+string state[4] = {"SN","WN","WT","ST" };
 int Reg[32];
 
-struct pred {
+struct pred{
 	string n;
-	int s[4];
+	int s[4];	
 	int mis;
 };
 
@@ -87,7 +88,88 @@ int main() {
 				}
 			}
 
+			bool pp = false, real = false;
+			bitset<2> b(p[entry[idx]].n);
+			unsigned long x = b.to_ulong();
+			if (p[entry[idx]].s[x] == 0 || p[entry[idx]].s[x] == 1) {
+				pp = false;
+				cout << " N ";
+			}
+			else {
+				pp = true;
+				cout << " T ";
+			}
 
+			if (Reg[r1] == Reg[r2]) {
+				real = true;
+				if (p[entry[idx]].s[x] < 3)
+					p[entry[idx]].s[x]++;
+
+				p[entry[idx]].n += "1";
+				p[entry[idx]].n.erase(0, 1);
+
+				j = label[la] - 1;
+				if (real != pp)
+					p[entry[idx]].mis++;
+				cout << "T          misprediction:  " << p[entry[idx]].mis << endl;
+				continue;
+			}
+			else {
+				real = false;
+				if (p[entry[idx]].s[x] > 0)
+					p[entry[idx]].s[x]--;
+
+				p[entry[idx]].n += "0";
+				p[entry[idx]].n.erase(0, 1);
+
+				if (real != pp)
+					p[entry[idx]].mis++;
+				cout << "N          misprediction:  " << p[entry[idx]].mis << endl;
+			}
+		}
+		else if (x == "li") {
+			pos = buffer.find("R");
+			int pos2 = buffer.find(",");
+			string m = buffer.substr(pos + 1, pos2 - pos - 1);
+			int r = stoi(m);
+			buffer.erase(0, pos2 + 1);
+			int value = stoi(buffer);
+			Reg[r] = value;
+		}
+		else if (x == "addi") {
+			pos = buffer.find("R");
+			int pos2 = buffer.find(",");
+			string m = buffer.substr(pos + 1, pos2 - pos - 1);
+			int r1 = stoi(m);
+
+			buffer.erase(0, pos2 + 1);
+			pos = buffer.find("R");
+			pos2 = buffer.find(",");
+			m = buffer.substr(pos + 1, pos2 - pos - 1);
+			int r2 = stoi(m);
+
+			buffer.erase(0, pos2 + 1);
+			int value = stoi(buffer);
+
+			Reg[r1] = Reg[r2] + value;
+		}
+		else if (x == "add") {
+			pos = buffer.find("R");
+			int pos2 = buffer.find(",");
+			string m = buffer.substr(pos + 1, pos2 - pos - 1);
+			int rd = stoi(m);
+
+			buffer.erase(0, pos2 + 1);
+			pos = buffer.find("R");
+			pos2 = buffer.find(",");
+			m = buffer.substr(pos + 1, pos2 - pos - 1);
+			int r1 = stoi(m);
+
+			buffer.erase(0, pos2 + 1);
+			m = buffer.substr(1, buffer.size());
+			int r2 = stoi(m);
+
+			Reg[rd] = Reg[r1] + Reg[r2];
 		}
 	}
 }
