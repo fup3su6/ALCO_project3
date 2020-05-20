@@ -19,8 +19,8 @@ int main() {
 	string buffer;
 	string inst[1000];
 	string str[1000];
-	int k = 0;		//²Ä´X­Óbeq,entry
-	int pc = 0;			//²Ä´X¦æ
+	int k = 0;		
+	int pc = 0;			//ç´€éŒ„PC
 	int entry[1000];
 	int label[1000];
 	pred p[1000];
@@ -83,7 +83,7 @@ int main() {
 			for (int i = 0;i < branch.size();i++) {
 				if (branch[i].first == str[j]) {
 					idx = branch[i].second;
-					cout << "entry: " << entry[idx] << "¡@¡@¡@" << inst[idx] << endl;
+					cout << "entry: " << entry[idx] << "      " << inst[idx] << endl;
 					cout << "(" << p[entry[idx]].n << ", " << state[p[entry[idx]].s[0]] << ", " << state[p[entry[idx]].s[1]] << ", " << state[p[entry[idx]].s[2]] << ", " << state[p[entry[idx]].s[3]] << ")";
 				}
 			}
